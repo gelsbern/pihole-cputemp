@@ -4,7 +4,7 @@ Display Raspberry Pi CPU temperature in the Pi-hole V6 web admin interface.
 
 This project adds a small custom JavaScript hook to the Pi-hole admin UI and updates a local JSON file with the current CPU temperature every 30 seconds using a systemd timer.
 
-It is designed for Raspberry Pi-based Pi-hole installs where you want the Pi-hole dashboard to show the system CPU temperature without installing a full monitoring stack.
+It is designed for Pi-hole installs where you want the Pi-hole dashboard to show the system CPU temperature without installing a full monitoring stack.
 
 ## Screenshot
 
