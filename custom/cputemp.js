@@ -1,4 +1,7 @@
 (function () {
+  const DEFAULT_ICON_CLASS = "text-green-light";
+  const BASE_ICON_CLASSES = "fa fa-fw fa-temperature-three-quarters";
+
   async function getCpuTemp() {
     try {
       const response = await fetch("/admin/custom/cputemp.json", {
@@ -30,10 +33,29 @@
 
     memoryLine.insertAdjacentHTML(
       "afterend",
-      '<br/><span id="temperature"><i class="fa fa-fw fa-temperature-three-quarters text-green-light"></i>&nbsp;&nbsp;Temp: <span id="temperature-value">Loading...</span></span>'
+      '<br/><span id="temperature"><i id="temperature-icon" class="' +
+        BASE_ICON_CLASSES +
+        " " +
+        DEFAULT_ICON_CLASS +
+        '"></i>&nbsp;&nbsp;Temp: <span id="temperature-value">Loading...</span></span>'
     );
 
     return document.getElementById("temperature");
+  }
+
+  function setIcon(temp) {
+    const icon = document.getElementById("temperature-icon");
+
+    if (!icon) {
+      return;
+    }
+
+    const iconClass = temp && temp.icon_class ? temp.icon_class : DEFAULT_ICON_CLASS;
+    icon.className = BASE_ICON_CLASSES + " " + iconClass;
+
+    if (temp && temp.status) {
+      icon.title = "CPU temperature status: " + temp.status;
+    }
   }
 
   async function updateTempLine() {
@@ -52,10 +74,15 @@
 
     if (!temp || temp.error) {
       value.textContent = "Unavailable";
+      setIcon({
+        status: "unavailable",
+        icon_class: "text-gray"
+      });
       return;
     }
 
     value.textContent = `${temp.fahrenheit}°F / ${temp.celsius}°C`;
+    setIcon(temp);
   }
 
   document.addEventListener("DOMContentLoaded", function () {

@@ -10,6 +10,13 @@ install -m 0755 pihole-update /usr/local/sbin/pihole-update
 mkdir -p /var/www/html/admin/custom
 install -m 0644 custom/cputemp.js /var/www/html/admin/custom/cputemp.js
 
+if [[ ! -f /etc/pihole-cputemp.conf ]]; then
+  install -m 0644 etc/pihole-cputemp.conf /etc/pihole-cputemp.conf
+  echo "Created default config: /etc/pihole-cputemp.conf"
+else
+  echo "Existing config preserved: /etc/pihole-cputemp.conf"
+fi
+
 install -m 0644 systemd/pihole-cputemp-json.service /etc/systemd/system/pihole-cputemp-json.service
 install -m 0644 systemd/pihole-cputemp-json.timer /etc/systemd/system/pihole-cputemp-json.timer
 install -m 0644 systemd/pihole-cputemp-reapply.service /etc/systemd/system/pihole-cputemp-reapply.service
