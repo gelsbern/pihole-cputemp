@@ -456,4 +456,4 @@ The reapply service exists because Pi-hole updates can remove custom dashboard c
 
 ## License
 
-MIT
+GPL-3.0-or-later
