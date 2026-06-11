@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TEMP_FILE="/sys/class/thermal/thermal_zone0/temp"
+OUT_FILE="/var/www/html/admin/custom/cputemp.json"
+
+if [[ ! -r "$TEMP_FILE" ]]; then
+  echo '{"error":"temperature source unavailable"}' > "$OUT_FILE"
+  exit 0
+fi
+
+RAW_TEMP="$(cat "$TEMP_FILE")"
+TEMP_C="$(awk -v t="$RAW_TEMP" 'BEGIN { printf "%.1f", t / 1000 }')"
+TEMP_F="$(awk -v c="$TEMP_C" 'BEGIN { printf "%.1f", (c * 9 / 5) + 32 }')"
+
+cat > "$OUT_FILE" <<EOF
+{
+  "celsius": "$TEMP_C",
+  "fahrenheit": "$TEMP_F",
+  "updated": "$(date --iso-8601=seconds)"
+}
+EOF

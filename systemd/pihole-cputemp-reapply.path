@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch Pi-hole footer for CPU temperature UI hook removal
+
+[Path]
+PathChanged=/var/www/html/admin/scripts/lua/footer.lp
+PathModified=/var/www/html/admin/scripts/lua/footer.lp
+
+[Install]
+WantedBy=multi-user.target

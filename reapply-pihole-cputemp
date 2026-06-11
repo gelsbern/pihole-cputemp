@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+FOOTER="/var/www/html/admin/scripts/lua/footer.lp"
+CUSTOM_DIR="/var/www/html/admin/custom"
+JS_FILE="${CUSTOM_DIR}/cputemp.js"
+WRITER="/usr/local/sbin/write-pihole-cputemp-json"
+LOG="/var/log/pihole-cputemp-reapply.log"
+SCRIPT_LINE='<script src="/admin/custom/cputemp.js"></script>'
+
+{
+  echo "==== $(date) ===="
+
+  if [[ ! -f "$FOOTER" ]]; then
+    echo "Missing footer file: $FOOTER"
+    exit 1
+  fi
+
+  mkdir -p "$CUSTOM_DIR"
+
+  if [[ ! -f "$JS_FILE" ]]; then
+    echo "Missing custom JS file: $JS_FILE"
+    echo "You need to recreate cputemp.js before this can work."
+    exit 1
+  fi
+
+  if [[ ! -x "$WRITER" ]]; then
+    echo "Missing or non-executable JSON writer: $WRITER"
+    exit 1
+  fi
+
+  # Make sure the JSON file exists immediately.
+  "$WRITER" || true
+
+  # Add the script include if it is missing.
+  if grep -Fq "$SCRIPT_LINE" "$FOOTER"; then
+    echo "CPU temp script include already present."
+  else
+    echo "Adding CPU temp script include to footer."
+
+    cp -a "$FOOTER" "${FOOTER}.bak.cputemp.$(date +%F-%H%M%S)"
+
+    sed -i "\#</body>#i ${SCRIPT_LINE}" "$FOOTER"
+
+    echo "Script include added."
+  fi
+
+  systemctl restart pihole-FTL
+  echo "pihole-FTL restarted."
+
+} >> "$LOG" 2>&1

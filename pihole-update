@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pihole -up
+/usr/local/sbin/reapply-pihole-cputemp

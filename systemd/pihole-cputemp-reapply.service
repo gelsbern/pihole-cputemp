@@ -1,0 +1,7 @@
+[Unit]
+Description=Reapply Pi-hole CPU temperature UI hook
+After=pihole-FTL.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/reapply-pihole-cputemp

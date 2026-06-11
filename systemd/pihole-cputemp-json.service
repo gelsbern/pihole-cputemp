@@ -1,0 +1,6 @@
+[Unit]
+Description=Write Pi-hole CPU temperature JSON
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/write-pihole-cputemp-json
